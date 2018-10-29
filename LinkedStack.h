@@ -1,6 +1,9 @@
+#ifndef __LINKEDSTACK_H__
+#define __LINKEDSTACK_H__
+
 #include<iostream>
-#include"LinkNode&&List.h"
-#include"stack.h"
+#include"LinkNode.h"
+#include"MyStack.h"
 using namespace std;
 
 template<class T>
@@ -10,18 +13,18 @@ public:
 	LinkedStack():top(NULL){}
 	~LinkedStack(){makeEmpty();}
 	void Push(const T& x);
-	bool Push(T& x);
+	bool Pop(T& x);
 	bool getTop(T& x)const;
 	bool IsEmpty()const{return (top==NULL)?true:false;}
 	int getSize()const;
 	void makeEmpty();
-	friend ostream& operator<< <T>(ostream& os,SeqStack<T>& s);
+	//friend ostream& operator<< <T>(ostream& os,SeqStack<T>& s);
 private:
 	LinkNode<T> *top;
-}
+};
 
 template<class T>
-LinkStack<T>::makeEmpty()
+void LinkedStack<T>::makeEmpty()
 {
 	LinkNode<T> *p;
 	while(top!=NULL)
@@ -51,7 +54,7 @@ bool LinkedStack<T>::Pop(T& x)
 }
 
 template<class T>
-bool LinkStack<T>::getTop(T& x)const
+bool LinkedStack<T>::getTop(T& x)const
 {
 	if(IsEmpty())return false;
 	x=top->data;
@@ -71,7 +74,7 @@ int LinkedStack<T>::getSize()const
 	return k;
 }
 
-template<class T>
+/*template<class T>
 ostream& operator<<(ostream& os,LinkNode<T>& s)
 {
 	os<<"栈中元素的重载个数="<<s.getSize()<<endl;
@@ -83,7 +86,7 @@ ostream& operator<<(ostream& os,LinkNode<T>& s)
 		p=p->link;
 	}
 	return os;
-}
+}*/
 
-
+#endif
 
