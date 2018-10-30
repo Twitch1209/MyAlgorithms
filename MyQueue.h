@@ -22,7 +22,7 @@ public:
 };
 
 template<class T>
-class LinkedQueue:public Queue<T>
+class LinkedQueue
 {
 public:
 	LinkedQueue():rear(NULL),front(NULL){}
@@ -126,7 +126,7 @@ void LinkedQueue<T>::show()
 	int i=0;
 	while(p!=NULL)
 	{
-		cout<<++i<<":"<<p->data<<endl;
+		cout<<p->data<<' ';
 		p=p->link;
 	}
 }
