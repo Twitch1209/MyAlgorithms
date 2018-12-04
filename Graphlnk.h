@@ -1,5 +1,8 @@
-
-const int DefaultVertices=30;//max vertives
+#ifndef __GRAPHLNK_H__
+#define __GRAPHLNK_H__
+#include<iostream>
+using namespace std;
+const int DefaultVertices=50;//max vertives
 
 //E--->edge,T--->vertex
 template<class T,class E>
@@ -15,14 +18,14 @@ struct Edge
 		return (dest!=R.dest)?true:false;
 	}
 	
-}
+};
 
 template<class T,class E>
 struct Vertex
 {
 	T data;						//teh name of the Vertex
 	Edge<T,E> *adj;				//*first to the list
-}
+};
 
 
 template<class T,class E>
@@ -32,26 +35,30 @@ public:
 	Graphlnk(int sz=DefaultVertices);
 	~Graphlnk();
 	T getValue(int i)							//get the value of Vertices(i)
-	{return(i>=0 && i<NumVertices)?NodeTable[i].data:0;}
+	{return(i>=0 && i<numVertices)?NodeTable[i].data:0;}
 	E getWeight(int v1,int v2);					//get the value of edge(v1,v2)
 	bool insertVertex(const T& v);				//insert vertex v
 	bool removeVertex(int v);					//delete vertex 
-	bool insertEdge(int v1,int v2,E weight);		//insert edge(v1,v2)
+	bool insertEdge(int v1,int v2,E cost);		//insert edge(v1,v2)
 	bool removeEdge(int v1,int v2);				//delete edge(v1,v2)
 	int getFirstNeighbor(int v);				//get v's first neighbor
 	int getNextNeighbor(int v,int w);			//get v->w's next
-private:
-	Vertex<T,E> *NodeTable;						//顶点表（各边链表的头结点）
-	int maxVertices;							//max of Vertices
-	int numEdges;								//the number of edges
-	int numVertices;							//the number of vertices
+	int getNumVertices(){return numVertices;}
+	int getNumEdges(){return numEdges;}
 	int getVertexPos(const T vertex)			//return i from vertex  like:get 0 form a
 	{
 		for(int i=0;i<numVertices;i++)
 		{
 			if(NodeTable[i].data==vertex) return i;
 		}
-	}	
+		return -1;
+	}
+	void setNumVertices(int num){numVertices=num;}
+private:
+	Vertex<T,E> *NodeTable;						//顶点表（各边链表的头结点）
+	int maxVertices;							//max of Vertices
+	int numEdges;								//the number of edges
+	int numVertices;							//the number of vertices	
 };
 
 template<class T,class E>
@@ -61,7 +68,7 @@ Graphlnk<T,E>::Graphlnk(int sz)
 	numVertices=0;
 	numEdges=0;
 	NodeTable=new Vertex<T,E>[maxVertices];
-	if(NodeTable==NULL) {cerr<<"存储分配错误"<<endl;exit(1);}
+	if(NodeTable==NULL) { cerr<<"存储分配错误"<<endl;exit(1);}
 	for(int i=0;i<maxVertices;i++)
 	{
 		NodeTable[i].adj=NULL;
@@ -118,7 +125,7 @@ E Graphlnk<T,E>::getWeight(int v1,int v2)
 {
 	if(v1!=-1 &&v2!=-1)
 	{
-		Edge<T,E> *p=NodeTable[v].adj;
+		Edge<T,E> *p=NodeTable[v1].adj;
 		while(p!=NULL && p->dest!=v2)
 		{
 			p=p->link;
@@ -162,7 +169,7 @@ bool Graphlnk<T,E>::removeVertex(int v)
 		}
 		NodeTable[v].adj=p->link;
 		delete p;
-		numEdge--;
+		numEdges--;
 	}
 	numVertices--;
 	NodeTable[v].data=NodeTable[numVertices].data;
@@ -184,7 +191,9 @@ bool Graphlnk<T,E>::removeVertex(int v)
 	return true;
 }
 
-//insert (v1,v2)
+
+ //insert (v1,v2)
+template<class T,class E>
 bool Graphlnk<T, E>::insertEdge(int v1, int v2, E weight)
 {
 	if (v1 >= 0 && v1 < numVertices && v2 >= 0 && v2 < numVertices)
@@ -212,6 +221,7 @@ bool Graphlnk<T, E>::insertEdge(int v1, int v2, E weight)
 }
 
 //remove edge(v1,v2)
+template<class T,class E>
 bool Graphlnk<T, E>::removeEdge(int v1, int v2)
 {
 	if (v1 != -1 && v2 != -1)
@@ -244,7 +254,4 @@ bool Graphlnk<T, E>::removeEdge(int v1, int v2)
 	return false;
 }
 
-
-
-
-
+#endif
