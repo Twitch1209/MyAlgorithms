@@ -254,4 +254,116 @@ bool Graphlnk<T, E>::removeEdge(int v1, int v2)
 	return false;
 }
 
+
+
+
+
+
+template<class T,class E>
+void TopologicalSort(Graphlnk<T, E>& G)
+{
+	int i, j, w, v;
+	int top = -1;						//入度为零顶点的栈初始化
+	int n = G.getNumVertices();			//网络中顶点个数
+	int *count = new int[n];			//入度数组兼入度为零顶点栈
+	for (i = 0; i < n; i++)
+	{
+		count[i] = 0;
+	}
+	cin >> i >> j;						//输入一条边（i，j）
+	while (i > -1 && i<n && j>-1 && j < n)
+	{
+		G.insertEdge(i, j);
+		count[j]++;
+		cin >> i >> j;
+	}
+	for (i = 0; i < n; i++)			//检查网络中所有的顶点
+	{
+		if (count[i] == 0)				//入度为零的顶点进栈
+		{
+			count[i] = top;
+			top = i;
+		}
+	}
+	for (i = 0; i < n; i++)			//期望输出n个顶点
+	{
+		if (top == -1)				//中途栈空，转出
+		{
+			cout << "网络中有回路！" << endl;
+			return;
+		}
+		else						//继续拓扑排序
+		{
+			v = top;
+			top = count[top];		//v退栈
+			count << G.getValue(v) << ' ' << endl;//输出
+			w = G.getFirstNeighbor(v);
+			while (w != -1)				//扫描出边表
+			{
+				if (--count[w] == 0)		//邻接顶点入度减少1
+				{
+					count[w] = top;
+					top = w;				//顶点入度减少到0，进栈
+				}
+				w = G.getNextNeighbor(v, w);
+			}
+
+		}
+	}
+}
+
+template<class T,class E>
+void CriticalPath(Graphlnk<T, E>& G)
+{
+	int i, j, k;
+	E Ae, Al, w;
+	int n = G.getNumVertices();
+	E *Ve = new E[n];
+	E *Vl = new E[n];
+	for (i = 0; i < n; i++)
+	{
+		Ve[i] = 0;
+	}
+	for (i = 0; i < n; i++)
+	{
+		j = G.getFirstNeighbor(i);
+		while (j != -1)
+		{
+			w = G.getWeight(i, j);
+			if (Ve[i] + w > Ve[j]) Ve[j] = Ve[i] + w;
+			j = G.getNextNeighbor(i, j);
+		}
+	}
+	Vl[n - 1] = Ve[n - 1];
+	for (j = n - 2; j > 0; j--)
+	{
+		k = G.getFirstNeighbor(j);
+		while (k != -1)
+		{
+			w = G.getWeight(j, k);
+			if (Vl[k] - w < Vl[j]) Vl[j] = Vl[k] - w;
+			k = G.getNextNeighbor(j, k);
+		}
+	}
+	for (i = 0; i < n; i++)
+	{
+		j = G.getFirstNeighbor(i);
+		while (j != -1)
+		{
+			Ae = Ve[i];
+			Al = Vl[k] - G.getWeight(i, j);
+			if (Al == Ae)
+			{
+				cout << '<' << G.getValue(i) << ',' << G.getValue(j) << '>' << "是关键活动" << endl;
+			}
+			j = G.getNextNeighbor(i,j);
+		}
+	}
+	delete[]Ve;
+	delete[]Vl;
+
+}
+
+
+
 #endif
